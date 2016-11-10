@@ -15,9 +15,19 @@ class TANK_API ATankPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 	
-public:
-	ATankPawn* GetControlledTank() const;
-	
+private:
 	virtual void BeginPlay() override;
+	virtual void Tick(float) override;
 	
+	ATankPawn* GetControlledTank() const;
+
+	void AimTowardsCrosshair();
+	bool GetSightRayHitLocation(FVector& HitLocation) const;
+	bool GetLookDirection(FVector2D, FVector&) const;
+
+	UPROPERTY(EditAnywhere)
+	float CrossHairXLocation = 0.5f;
+
+	UPROPERTY(EditAnywhere)
+	float CrossHairYLocation = 0.33333f;
 };
