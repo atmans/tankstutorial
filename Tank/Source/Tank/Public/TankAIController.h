@@ -3,13 +3,16 @@
 #pragma once
 
 #include "Tank.h"
-#include "TankPawn.h"
 #include "AIController.h"
 #include "TankAIController.generated.h"
 
 /**
  * 
  */
+
+//Forward declarations
+class ATankPawn;
+
 UCLASS()
 class TANK_API ATankAIController : public AAIController
 {

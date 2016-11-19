@@ -2,6 +2,7 @@
 
 #include "Tank.h"
 #include "TankBarrel.h"
+#include "TankTurret.h"
 #include "TankAimingComponent.h"
 
 
@@ -39,8 +40,16 @@ void UTankAimingComponent::TickComponent( float DeltaTime, ELevelTick TickType, 
 
 void UTankAimingComponent::SetBarrelReference(UTankBarrel* BarrelToSet)
 {
+	if (!BarrelToSet) { return; }
 	Barrel = BarrelToSet;
 }
+
+void UTankAimingComponent::SetTurretReference(UTankTurret* TurretToSet)
+{
+	if (!TurretToSet) { return; }
+	Turret = TurretToSet;
+}
+
 
 
 void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
@@ -71,8 +80,13 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 		)
 	{
 		FVector AimDirection = OutLaunchVelocity.GetSafeNormal();
-		//UE_LOG(LogTemp, Warning, TEXT("Firing at %s "), *AimDirection.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("Firing at %s "), *AimDirection.ToString());
+		MoveTurret(AimDirection);
 		MoveBarrel(AimDirection);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Can't find target"));
 	}
 }
 
@@ -82,6 +96,17 @@ void UTankAimingComponent::MoveBarrel(FVector AimDirection)
 	auto AimAsRotator = AimDirection.Rotation();
 	auto DeltaRotator = AimAsRotator - BarrelRotator;
 
-	Barrel->Elevate(5.f);
+	Barrel->Elevate(DeltaRotator.Pitch);
 }
+
+void UTankAimingComponent::MoveTurret(FVector AimDirection)
+{
+	auto TurretRotator = Turret->GetForwardVector().Rotation();  //current rotation
+	auto AimAsRotator = AimDirection.Rotation();
+	auto DeltaRotator = AimAsRotator - TurretRotator;
+
+	Turret->Rotate(DeltaRotator.Yaw);
+}
+
+
 
