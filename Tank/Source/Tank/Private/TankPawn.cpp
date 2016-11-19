@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Tank.h"
+#include "TankBarrel.h"
 #include "TankPawn.h"
 
 
@@ -36,9 +37,15 @@ void ATankPawn::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 
 }
 
+void ATankPawn::SetBarrelReference(UTankBarrel* BarrelToSet)
+{
+	TankAimingComponent->SetBarrelReference(BarrelToSet);
+};
+
 void ATankPawn::AimAt(FVector HitLocation)
 {
-	auto OurTankName = GetName();
-	UE_LOG(LogTemp, Warning, TEXT("%s Aiming at %s"), *OurTankName, *HitLocation.ToString());
+	TankAimingComponent->AimAt(HitLocation, LaunchSpeed);
+//	auto OurTankName = GetName();
+//	UE_LOG(LogTemp, Warning, TEXT("%s Aiming at %s"), *OurTankName, *HitLocation.ToString());
 }
 
