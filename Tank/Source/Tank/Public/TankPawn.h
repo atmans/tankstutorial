@@ -9,6 +9,7 @@
 class UTankBarrel;
 class UTankTurret;
 class UTankAimingComponent;
+class AProjectile;
 
 UCLASS()
 class TANK_API ATankPawn : public APawn
@@ -44,6 +45,11 @@ private:
 	virtual void SetupPlayerInputComponent(class UInputComponent* InputComponent) override;
 
 	UPROPERTY(EditAnywhere, Category = Firing)
-	float LaunchSpeed = 100000; // TODO find sensible default value (currently 1000 m/s)
+	float LaunchSpeed = 4000; // TODO find sensible default value (currently 1000 m/s)
+
+	UPROPERTY(EditAnywhere, Category = Setup)
+	TSubclassOf<AProjectile> ProjectileBlueprint;  //see https://docs.unrealengine.com/latest/INT/Programming/UnrealArchitecture/TSubclassOf/
+
+	UTankBarrel* Barrel = nullptr;
 	
 };

@@ -4,6 +4,7 @@
 #include "TankAimingComponent.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
+#include "Projectile.h"
 #include "TankPawn.h"
 
 
@@ -42,6 +43,7 @@ void ATankPawn::SetupPlayerInputComponent(class UInputComponent* InputComponent)
 void ATankPawn::SetBarrelReference(UTankBarrel* BarrelToSet)
 {
 	TankAimingComponent->SetBarrelReference(BarrelToSet);
+	Barrel = BarrelToSet;
 };
 
 void ATankPawn::SetTurretReference(UTankTurret* TurretToSet)
@@ -52,6 +54,16 @@ void ATankPawn::SetTurretReference(UTankTurret* TurretToSet)
 void ATankPawn::Fire()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Tank Fires"));
+
+	if (!Barrel) { return; }
+
+	//Spawn a projectile in the socket
+
+	GetWorld()->SpawnActor<AProjectile>(
+		ProjectileBlueprint,
+		Barrel->GetSocketLocation(FName("Projectile")),
+		Barrel->GetSocketRotation(FName("Projectile"))
+		);
 }
 
 void ATankPawn::AimAt(FVector HitLocation)
