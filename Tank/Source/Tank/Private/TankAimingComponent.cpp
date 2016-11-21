@@ -80,7 +80,7 @@ void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
 		)
 	{
 		FVector AimDirection = OutLaunchVelocity.GetSafeNormal();
-		UE_LOG(LogTemp, Warning, TEXT("Firing at %s "), *AimDirection.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("Firing at %s "), *AimDirection.ToString());
 		MoveTurret(AimDirection);
 		MoveBarrel(AimDirection);
 	}

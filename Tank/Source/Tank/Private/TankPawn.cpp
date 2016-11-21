@@ -2,6 +2,7 @@
 
 #include "Tank.h"
 #include "TankAimingComponent.h"
+#include "TankMovementComponent.h"
 #include "TankBarrel.h"
 #include "TankTurret.h"
 #include "Projectile.h"
@@ -16,7 +17,6 @@ ATankPawn::ATankPawn()
 
 	//No need to protect points as added at construction
 	TankAimingComponent = CreateDefaultSubobject<UTankAimingComponent>(FName("Aiming Component"));
-
 }
 
 // Called when the game starts or when spawned
@@ -24,6 +24,7 @@ void ATankPawn::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	///LastFireTime = FPlatformTime::Seconds() - 3;  //allow the tank to fire right away
 }
 
 // Called every frame
@@ -53,17 +54,23 @@ void ATankPawn::SetTurretReference(UTankTurret* TurretToSet)
 
 void ATankPawn::Fire()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Tank Fires"));
 
 	if (!Barrel) { return; }
 
+	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
 	//Spawn a projectile in the socket
 
-	GetWorld()->SpawnActor<AProjectile>(
-		ProjectileBlueprint,
-		Barrel->GetSocketLocation(FName("Projectile")),
-		Barrel->GetSocketRotation(FName("Projectile"))
-		);
+	if (isReloaded)
+	{
+		AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(
+			ProjectileBlueprint,
+			Barrel->GetSocketLocation(FName("Projectile")),
+			Barrel->GetSocketRotation(FName("Projectile"))
+			);
+
+		Projectile->LaunchProjectile(LaunchSpeed);
+		LastFireTime = FPlatformTime::Seconds();
+	}
 }
 
 void ATankPawn::AimAt(FVector HitLocation)
