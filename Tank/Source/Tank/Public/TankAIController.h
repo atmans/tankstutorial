@@ -21,4 +21,7 @@ class TANK_API ATankAIController : public AAIController
 private:
 	virtual void BeginPlay() override;
 	virtual void Tick(float) override;
+
+	//how close can the tank get when seeking
+	float AcceptanceRadius = 3000;
 };
