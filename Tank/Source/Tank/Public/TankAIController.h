@@ -11,7 +11,7 @@
  */
 
 //Forward declarations
-class ATankPawn;
+//class ATankPawn;
 
 UCLASS()
 class TANK_API ATankAIController : public AAIController

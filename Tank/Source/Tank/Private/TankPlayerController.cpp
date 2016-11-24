@@ -8,7 +8,7 @@
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (ensure(AimingComponent))
 	{
 		FoundAimingComponent(AimingComponent);
@@ -22,14 +22,18 @@ void ATankPlayerController::BeginPlay()
 void ATankPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	AimTowardsCrosshair();
+
+	if (ensure(AimingComponent))
+	{
+		AimTowardsCrosshair();
+	}
 }
 
 void ATankPlayerController::AimTowardsCrosshair() 
 {
 
 	FVector HitLocation; //Out Parameter
-	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+	//auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 
 	if (!ensure(AimingComponent)) { return; }
 
