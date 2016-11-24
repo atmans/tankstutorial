@@ -28,19 +28,30 @@ class TANK_API UTankAimingComponent : public UActorComponent
 public:	
 	UFUNCTION(BlueprintCallable, Category = Setup)
 	void Initialize(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
+	
+	UFUNCTION(BlueprintCallable, Category = Firing)
+	void Fire();
 
 	// Sets default values for this component's properties
 	UTankAimingComponent();
 
-	void AimAt(FVector HitLocation, float LaunchSpeed);
+	void AimAt(FVector HitLocation);
 
-	void Fire(TSubclassOf<AProjectile> ProjectileBlueprint, float LaunchSpeed);
+	
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 	EFiringState FiringState = EFiringState::Reloading;
 
+
+
 private:
+	UPROPERTY(EditAnywhere, Category = "Firing")
+	float LaunchSpeed = 8000; // TODO find sensible default value (currently 1000 m/s)
+
+	UPROPERTY(EditAnywhere, Category = Setup)
+	TSubclassOf<AProjectile> ProjectileBlueprint;  //see https://docs.unrealengine.com/latest/INT/Programming/UnrealArchitecture/TSubclassOf/
+
 	UTankBarrel* Barrel = nullptr;
 	UTankTurret* Turret = nullptr;
 

@@ -1,7 +1,6 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "Tank.h"
-#include "TankPawn.h"
 #include "TankAimingComponent.h"
 #include "TankPlayerController.h"
 
@@ -9,7 +8,7 @@
 void ATankPlayerController::BeginPlay()
 {
 	Super::BeginPlay();
-	auto AimingComponent = GetControlledTank()->FindComponentByClass<UTankAimingComponent>();
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
 	if (ensure(AimingComponent))
 	{
 		FoundAimingComponent(AimingComponent);
@@ -26,25 +25,19 @@ void ATankPlayerController::Tick(float DeltaSeconds)
 	AimTowardsCrosshair();
 }
 
-ATankPawn* ATankPlayerController::GetControlledTank() const
-{
-
-	return Cast<ATankPawn>(GetPawn());
-}
-
 void ATankPlayerController::AimTowardsCrosshair() 
 {
-	if (!GetControlledTank()) { return; }
 
 	FVector HitLocation; //Out Parameter
+	auto AimingComponent = GetPawn()->FindComponentByClass<UTankAimingComponent>();
+
+	if (!ensure(AimingComponent)) { return; }
 
 	//Get world location of linetrace through crosshair
 	if (GetSightRayHitLocation(HitLocation))  //Has "side-effect" in that it is going to line trace
 	{
 		//Tell controlled tank to aim at this point		
-		GetControlledTank()->AimAt(HitLocation);
-		
-		//UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"),*HitLocation.ToString());
+		AimingComponent->AimAt(HitLocation);
 
 	}
 	
@@ -64,7 +57,6 @@ bool ATankPlayerController::GetSightRayHitLocation(FVector& HitLocation) const
 	if (GetLookDirection(ScreenLocation, LookDirection))
 	{
 		return GetLookVectorHitLocation(LookDirection, HitLocation);
-		//UE_LOG(LogTemp, Warning, TEXT("HitLocation: %s"), *HitLocation.ToString());
 	}
 	//line-trace along that look direction and see what we hit (up to a max range)
 	

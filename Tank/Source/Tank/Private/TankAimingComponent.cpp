@@ -18,7 +18,6 @@ UTankAimingComponent::UTankAimingComponent()
 	// ...
 }
 
-
 void UTankAimingComponent::Initialize(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet)
 {
 	if (!BarrelToSet || !TurretToSet) { return; }
@@ -26,45 +25,6 @@ void UTankAimingComponent::Initialize(UTankBarrel* BarrelToSet, UTankTurret* Tur
 	Barrel = BarrelToSet;
 	Turret = TurretToSet;
 };
-
-
-void UTankAimingComponent::AimAt(FVector HitLocation, float LaunchSpeed)
-{
-	//auto OurTankName = GetOwner()->GetName();
-	//auto BarrelLocation = Barrel->GetComponentLocation();
-	//UE_LOG(LogTemp, Warning, TEXT("%s Aiming at %s from %s"), *OurTankName, *HitLocation.ToString(),*BarrelLocation.ToString());
-
-	if (!ensure(Barrel)) { return; }
-
-	FVector OutLaunchVelocity;
-	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
-
-	// Calculate the OutLaunchVelocity
-
-	if (UGameplayStatics::SuggestProjectileVelocity
-			(
-				this,
-				OutLaunchVelocity,
-				StartLocation,
-				HitLocation,
-				LaunchSpeed,
-				false,
-				0,
-				0,
-				ESuggestProjVelocityTraceOption::DoNotTrace
-			)
-		)
-	{
-		FVector AimDirection = OutLaunchVelocity.GetSafeNormal();
-		//UE_LOG(LogTemp, Warning, TEXT("Firing at %s "), *AimDirection.ToString());
-		MoveTurret(AimDirection);
-		MoveBarrel(AimDirection);
-	}
-	else
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("Can't find target"));
-	}
-}
 
 void UTankAimingComponent::MoveBarrel(FVector AimDirection)
 {
@@ -84,20 +44,67 @@ void UTankAimingComponent::MoveTurret(FVector AimDirection)
 	Turret->Rotate(DeltaRotator.Yaw);
 }
 
-void UTankAimingComponent::Fire(TSubclassOf<AProjectile> ProjectileBlueprint, float LaunchSpeed)
+void UTankAimingComponent::AimAt(FVector HitLocation)
+{
+	//auto OurTankName = GetOwner()->GetName();
+	//auto BarrelLocation = Barrel->GetComponentLocation();
+	//UE_LOG(LogTemp, Warning, TEXT("%s Aiming at %s from %s"), *OurTankName, *HitLocation.ToString(),*BarrelLocation.ToString());
+
+	if (!ensure(Barrel)) { return; }
+
+	FVector OutLaunchVelocity;
+	FVector StartLocation = Barrel->GetSocketLocation(FName("Projectile"));
+
+	// Calculate the OutLaunchVelocity
+
+	if (UGameplayStatics::SuggestProjectileVelocity
+	(
+		this,
+		OutLaunchVelocity,
+		StartLocation,
+		HitLocation,
+		LaunchSpeed,
+		false,
+		0,
+		0,
+		ESuggestProjVelocityTraceOption::DoNotTrace
+	)
+		)
+	{
+		FVector AimDirection = OutLaunchVelocity.GetSafeNormal();
+		UE_LOG(LogTemp, Warning, TEXT("Firing at %s "), *AimDirection.ToString());
+		MoveTurret(AimDirection);
+		MoveBarrel(AimDirection);
+	}
+	else
+	{
+		//UE_LOG(LogTemp, Warning, TEXT("Can't find target"));
+	}
+}
+
+void UTankAimingComponent::Fire()
 {
 
 	if (!ensure(Barrel)) { return; }
 
-	//Spawn a projectile in the socket
 
-	AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(
-		ProjectileBlueprint,
-		Barrel->GetSocketLocation(FName("Projectile")),
-		Barrel->GetSocketRotation(FName("Projectile"))
-		);
+	bool isReloaded = (FPlatformTime::Seconds() - LastFireTime) > ReloadTimeInSeconds;
+	////Spawn a projectile in the socket
 
-	Projectile->LaunchProjectile(LaunchSpeed);
+	if (isReloaded)
+	{
+		//Spawn a projectile in the socket
+
+		AProjectile* Projectile = GetWorld()->SpawnActor<AProjectile>(
+			ProjectileBlueprint,
+			Barrel->GetSocketLocation(FName("Projectile")),
+			Barrel->GetSocketRotation(FName("Projectile"))
+			);
+
+		Projectile->LaunchProjectile(LaunchSpeed);
+
+		LastFireTime = FPlatformTime::Seconds();
+	}
 }
 
 
