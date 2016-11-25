@@ -43,5 +43,4 @@ private:
 	UPROPERTY(EditAnywhere)
 	float LineTraceRange = 1000000.0f;  //10km ... in centimeters
 
-	UTankAimingComponent* AimingComponent = nullptr;
 };
