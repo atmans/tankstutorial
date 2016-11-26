@@ -27,10 +27,10 @@ class TANK_API UTankAimingComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	UFUNCTION(BlueprintCallable, Category = Setup)
+	UFUNCTION(BlueprintCallable, Category = "Setup")
 	void Initialize(UTankBarrel* BarrelToSet, UTankTurret* TurretToSet);
 	
-	UFUNCTION(BlueprintCallable, Category = Firing)
+	UFUNCTION(BlueprintCallable, Category = "Firing")
 	void Fire();
 
 	// Sets default values for this component's properties
@@ -44,20 +44,23 @@ public:
 	EFiringState GetFiringState() const;
 	
 	UFUNCTION(BlueprintCallable, Category = "Firing")
-	int GetAmmoCount() const;
+	int32 GetAmmoCount() const;
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "State")
 	EFiringState FiringState = EFiringState::Reloading;
 
-	
-	
-
 private:
 	UPROPERTY(EditAnywhere, Category = "Firing")
 	float LaunchSpeed = 8000; // TODO find sensible default value (currently 1000 m/s)
 
-	UPROPERTY(EditAnywhere, Category = Setup)
+	UPROPERTY(EditAnywhere, Category = "Firing")
+	int32 AmmoCount = 3;
+
+	UPROPERTY(EditAnywhere, Category = "Firing")
+	float ReloadTimeInSeconds = 3.f;
+
+	UPROPERTY(EditAnywhere, Category = "Setup")
 	TSubclassOf<AProjectile> ProjectileBlueprint;  //see https://docs.unrealengine.com/latest/INT/Programming/UnrealArchitecture/TSubclassOf/
 
 	UTankBarrel* Barrel = nullptr;
@@ -67,9 +70,7 @@ private:
 	void MoveBarrel(FVector AimDirection);
 	void MoveTurret(FVector AimDirection);
 	bool IsBarrelMoving();
-	
-	int AmmoCount = 3;
-	float ReloadTimeInSeconds = 3.f;
+
 	double LastFireTime = 0;
 
 };

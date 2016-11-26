@@ -20,7 +20,7 @@ class TANK_API ATankAIController : public AAIController
 	
 protected:
 	//how close can the tank get when seeking
-	UPROPERTY(EditAnywhere, Category = Setup)
+	UPROPERTY(EditAnywhere, Category = "Setup")
 	float AcceptanceRadius = 8000;
 
 private:

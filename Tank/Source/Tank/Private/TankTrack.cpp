@@ -20,13 +20,13 @@ void UTankTrack::BeginPlay()
 void UTankTrack::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction *ThisTickFunction)
 {
 //
-	if (CurrentThrottle != 0)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("hitting"));
-		DrivingTrack();
-		ApplySidewaysForce();
-		CurrentThrottle = 0;
-	}
+	//if (CurrentThrottle != 0)
+	//{
+	//	//UE_LOG(LogTemp, Warning, TEXT("hitting"));
+	//	DrivingTrack();
+	//	ApplySidewaysForce();
+	//	CurrentThrottle = 0;
+	//}
 //
 }
 
@@ -51,12 +51,12 @@ void UTankTrack::DrivingTrack()
 
 void UTankTrack::OnHit(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComponent, FVector NormalImpulse, const FHitResult& Hit)
 {
-	////Drive tracks
-	////apply a sideways force
+	//Drive tracks
+	//apply a sideways force
 	//UE_LOG(LogTemp, Warning, TEXT("hitting"));
-	//DrivingTrack();
-	//ApplySidewaysForce();
-	//CurrentThrottle = 0;
+	DrivingTrack();
+	ApplySidewaysForce();
+	CurrentThrottle = 0;
 
 }
 
@@ -72,7 +72,7 @@ void UTankTrack::ApplySidewaysForce()
 
 																				 // calcuate the corrective force sideways (F = m a)
 	auto TankRoot = Cast<UStaticMeshComponent>(GetOwner()->GetRootComponent());
-	auto CorrectionForce = (TankRoot->GetMass() * CorrectionAcceleration) /2; //divide by 2 for the two tracks ---> F = m a
+	auto CorrectionForce = (TankRoot->GetMass() * CorrectionAcceleration) / 2; //divide by 2 for the two tracks ---> F = m a
 
 																			   // apply corrective force
 	TankRoot->AddForce(CorrectionForce);
