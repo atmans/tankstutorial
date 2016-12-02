@@ -5,6 +5,7 @@
 #include "GameFramework/Pawn.h"
 #include "TankPawn.generated.h"  //Put new includes above
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FTankDelegate);
 
 UCLASS()
 class TANK_API ATankPawn : public APawn
@@ -18,13 +19,14 @@ public:
 	UFUNCTION(BlueprintPure, Category = "Health")
 	float GetHealthPercent() const;
 
+	FTankDelegate OnDeath;
 
 private:
 	// Sets default values for this pawn's properties
 	ATankPawn();
 
 	UPROPERTY(EditDefaultsOnly, Category = "Setup")
-	int32 StartHealth = 100;
+	int32 StartHealth = 30;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Health")
 	int32 CurrentHealth = StartHealth;

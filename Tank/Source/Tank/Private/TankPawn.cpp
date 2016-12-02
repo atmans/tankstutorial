@@ -21,6 +21,7 @@ void ATankPawn::BeginPlay()
 {
 	Super::BeginPlay();
 
+	CurrentHealth = StartHealth;
 }
 
 float ATankPawn::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent, AController * EventInstigator, AActor * DamageCauser)
@@ -33,6 +34,7 @@ float ATankPawn::TakeDamage(float DamageAmount, FDamageEvent const &DamageEvent,
 	if (CurrentHealth <= 0)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("%s died!"), *GetName());
+		OnDeath.Broadcast();
 	}
 
 	UE_LOG(LogTemp, Warning, TEXT("DamagePoints %i"), DamagePoints);
